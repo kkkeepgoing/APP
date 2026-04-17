@@ -44,11 +44,11 @@ def apply_app_algorithm(pretrained_weights, finetuned_weights, rank_k=64):
 
 # --- 使用示例 ---
 # 1. 获取微调后的权重
-model1 = Qwen3VLForConditionalGeneration.from_pretrained("/mnt/cfs-ls/zhonghanmeng/LLaMA-Factory-2510/saves/qwen3vl-8b-chem_mapping-freeze-lang-0417/checkpoint-444", device_map="auto", torch_dtype=torch.bfloat16)
+model1 = Qwen3VLForConditionalGeneration.from_pretrained("finetuned_model_path", device_map="auto", torch_dtype=torch.bfloat16)
 # finetuned_projector_weights = model1.get_model().mm_projector.state_dict()
 finetuned_projector_weights = model1.model.visual.merger.state_dict()
 
-model2 = Qwen3VLForConditionalGeneration.from_pretrained("/mnt/cfs-ls/zhonghanmeng/models/huggingface/qwen3-8B-vl", device_map="auto", torch_dtype=torch.bfloat16)
+model2 = Qwen3VLForConditionalGeneration.from_pretrained("base_model_path", device_map="auto", torch_dtype=torch.bfloat16)
 # pretrained_projector_weights = model2.get_model().mm_projector.state_dict()
 pretrained_projector_weights = model2.model.visual.merger.state_dict()
 
@@ -62,4 +62,4 @@ final_weights = apply_app_algorithm(
 
 # 3. 将处理后的权重加载回模型并保存
 model1.model.visual.merger.load_state_dict(final_weights)
-model1.save_pretrained("/mnt/cfs-ls/zhonghanmeng/checkpoint_merge/merged_checkpoint/sft_merge_checkpoint_rank_k_64")
+model1.save_pretrained("new_model_path")
